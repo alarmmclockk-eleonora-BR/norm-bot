@@ -13,23 +13,43 @@ MORNING_PAUSED = False
 
 async def pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global BOT_PAUSED
+
+    if BOT_PAUSED:
+        await update.message.reply_text("Я і так мовчу")
+        return
+
     BOT_PAUSED = True
     await update.message.reply_text("Замовкаю")
 
 async def resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global BOT_PAUSED
+
+    if not BOT_PAUSED:
+        await update.message.reply_text("Я і так балакаю")
+        return
+
     BOT_PAUSED = False
     await update.message.reply_text("Балакаю")
 
 async def morning_pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global MORNING_PAUSED
+
+    if MORNING_PAUSED:
+        await update.message.reply_text("Ранкове привітання вже вимкнене")
+        return
+
     MORNING_PAUSED = True
-    await update.message.reply_text("Ранкове привітання off")
+    await update.message.reply_text("Ранкове привітання вимкнено")
 
 async def morning_resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     global MORNING_PAUSED
+
+    if not MORNING_PAUSED:
+        await update.message.reply_text("Ранкове привітання вже увімкнене")
+        return
+
     MORNING_PAUSED = False
-    await update.message.reply_text("Ранкове привітанна on")
+    await update.message.reply_text("Ранкове привітання увімкнено")
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -204,27 +224,7 @@ async def morning_message(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=chat_id,
         text="Всім нормального ранку 👋"
-    )
-async def pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global BOT_PAUSED
-
-    if BOT_PAUSED:
-        await update.message.reply_text("Я і так мовчу")
-        return
-
-    BOT_PAUSED = True
-    await update.message.reply_text("Замовкаю")
-
-async def resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global BOT_PAUSED
-
-    if not BOT_PAUSED:
-        await update.message.reply_text("Я і так балакаю")
-        return
-
-    BOT_PAUSED = False
-    await update.message.reply_text("Балакаю")
-    
+    )    
 app = Application.builder().token(TOKEN).build()
 
 # звичайні повідомлення
