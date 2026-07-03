@@ -8,6 +8,29 @@ from zoneinfo import ZoneInfo
 
 TOKEN = os.getenv("TOKEN")
 
+BOT_PAUSED = False
+MORNING_PAUSED = False
+
+async def pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global BOT_PAUSED
+    BOT_PAUSED = True
+    await update.message.reply_text("Замовкаю")
+
+async def resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global BOT_PAUSED
+    BOT_PAUSED = False
+    await update.message.reply_text("Балакаю")
+
+async def morning_pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global MORNING_PAUSED
+    MORNING_PAUSED = True
+    await update.message.reply_text("Ранкове привітання off")
+
+async def morning_resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global MORNING_PAUSED
+    MORNING_PAUSED = False
+    await update.message.reply_text("Ранкове привітанна on")
+
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Самі собі поможіть 🙄\n\n"
@@ -37,6 +60,9 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text is None:
         return
 
+    if BOT_PAUSED:
+        return
+    
     text = update.message.text.lower()
 
     def send_norm():
@@ -172,6 +198,8 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
 # повідомлення о 7:00
 async def morning_message(context: ContextTypes.DEFAULT_TYPE):
+    if MORNING_PAUSED:
+        return
     chat_id = -5458919378
     await context.bot.send_message(
         chat_id=chat_id,
@@ -182,14 +210,16 @@ app = Application.builder().token(TOKEN).build()
 
 # звичайні повідомлення
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply))
-
 app.add_handler(CommandHandler("help", help_cmd))
-
 app.add_handler(CommandHandler("start", start_cmd))
 # планування
 app.job_queue.run_daily(
     morning_message,
     time=time(hour=7, minute=0, tzinfo=ZoneInfo("Europe/Kyiv"))
 )
+app.add_handler(CommandHandler("pause", pause_cmd))
+app.add_handler(CommandHandler("resume", resume_cmd))
+app.add_handler(CommandHandler("morning_pause", morning_pause_cmd))
+app.add_handler(CommandHandler("morning_resume", morning_resume_cmd))
 
 app.run_polling()
