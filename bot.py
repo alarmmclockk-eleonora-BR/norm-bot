@@ -205,7 +205,26 @@ async def morning_message(context: ContextTypes.DEFAULT_TYPE):
         chat_id=chat_id,
         text="Всім нормального ранку 👋"
     )
+async def pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global BOT_PAUSED
 
+    if BOT_PAUSED:
+        await update.message.reply_text("Я і так мовчу")
+        return
+
+    BOT_PAUSED = True
+    await update.message.reply_text("Замовкаю")
+
+async def resume_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global BOT_PAUSED
+
+    if not BOT_PAUSED:
+        await update.message.reply_text("Я і так балакаю")
+        return
+
+    BOT_PAUSED = False
+    await update.message.reply_text("Балакаю")
+    
 app = Application.builder().token(TOKEN).build()
 
 # звичайні повідомлення
@@ -218,8 +237,8 @@ app.job_queue.run_daily(
     time=time(hour=7, minute=0, tzinfo=ZoneInfo("Europe/Kyiv"))
 )
 app.add_handler(CommandHandler("pause", pause_cmd))
-app.add_handler(CommandHandler("resume", resume_cmd))
-app.add_handler(CommandHandler("morning_pause", morning_pause_cmd))
-app.add_handler(CommandHandler("morning_resume", morning_resume_cmd))
+app.add_handler(CommandHandler("play", resume_cmd))
+app.add_handler(CommandHandler("morning_off", morning_pause_cmd))
+app.add_handler(CommandHandler("morning_on", morning_resume_cmd))
 
 app.run_polling()
