@@ -13,7 +13,7 @@ Telegram-бот, який оцінює "Норм" чи "Не норм".
   - /play
   - /morning_on
   - /morning_off
-- автоматичне ранкове повідомлення
+- автоматичне ранкове повідомлення (на павзі)
 - Pepsi vs Coca-Cola
 - реакція на токсичні фрази
 - відповіді на подяку
@@ -24,6 +24,16 @@ Telegram-бот, який оцінює "Норм" чи "Не норм".
 - python-telegram-bot
 - Render
 - Telegram Bot API
+
+## Screenshots
+
+| /start | /help |
+|--------|--------|
+| ![](start.png) | ![](help.png) |
+
+| Morning greeting | Pepsi vs Coca-Cola |
+|------------------|--------------------|
+| ![](morning.png) | ![](pepsi.png) |
 
 ## Запуск
 
